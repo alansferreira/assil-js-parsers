@@ -1,0 +1,23 @@
+{
+  "name": "named-regexp",
+  "version": "0.1.1",
+  "description": "Append named-capture feature to JavaScript RegExp",
+  "main": "lib/named-regexp.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cho45/named-regexp.js.git"
+  },
+  "keywords": [
+    "RegExp",
+    "capture",
+    "named-capture"
+  ],
+  "author": "cho45",
+  "license": "MIT"
+}

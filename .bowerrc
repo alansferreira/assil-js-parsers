@@ -1,0 +1,6 @@
+{
+  "directory": "lib",
+  "analytics": false,
+  "timeout": 120000,
+  "strict-ssl": false
+}

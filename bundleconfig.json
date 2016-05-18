@@ -1,0 +1,9 @@
+[
+  {
+    "outputFileName": "js/sql.parsers.bundle.js",
+    "inputFiles": [
+      "js/base.js",
+      "js/sql.ansi.parser.js"
+    ]
+  }
+]
