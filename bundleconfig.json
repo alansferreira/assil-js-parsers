@@ -5,5 +5,11 @@
       "js/base.js",
       "js/sql.ansi.parser.js"
     ]
+  },
+  {
+    "outputFileName": "lib/requirejs/require.js",
+    "inputFiles": [
+      "lib/requirejs/require.js"
+    ]
   }
 ]
