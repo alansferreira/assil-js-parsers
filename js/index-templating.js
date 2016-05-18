@@ -4,6 +4,7 @@
 /// <reference path="base.js" />
 /// <reference path="sql.ansi.parser.js" />
 /// <reference path="../lib/requirejs/require.min.js" />
+/// <reference path="../lib/mustache.js/mustache.min.js" />
 
 //////require(["jquery", "ace-editor", "angular", "angular-ui-ace", ]);
 
@@ -12,8 +13,15 @@ var app = angular.module('parserApp', ['ui.ace']);
 var ctrl = app.controller("ctrl", function ($scope) {
 
     $scope.sqlScript = $("#sampleSource").text();
-    $scope.handlebarsTemplate = $("#sampleTemplate").text();
-    $scope.handlebarsOutput = "";
+    $scope.template = '{{#databases}}' +
+                      '\n{{name}}' +
+                      '\n    {{#tables}}' +
+                      '\n        {{#schema}}{{schema}}.{{/schema}}{{name}}{{#columns}}' +
+                      '\n            {{name}} {{type}} {{#precision}}({{precision}}{{#scale}}, {{scale}}{{/scale}}){{/precision}} {{#isPrimary}}PK{{/isPrimary}}{{/columns}}' +
+                      '\n    {{/tables}}' +
+                      '\n{{/databases}}';
+
+    $scope.output = "";
 
     $scope.databases = [{name: 'sample'}];
     
@@ -23,13 +31,7 @@ var ctrl = app.controller("ctrl", function ($scope) {
 
         $scope.databases[0].tables = sql.ansi.parser.tableScript(scriptCopy);
 
-
-        var template = Handlebars.compile($scope.handlebarsTemplate);
-        $scope.handlebarsOutput = template({
-            data: { databases: $scope.databases },
-            compat: true,
-            preventIndent: true,
-        });
+        $scope.output = Mustache.render($scope.template, { databases: $scope.databases });
     };
 
     $scope.aceOptionBase = {
