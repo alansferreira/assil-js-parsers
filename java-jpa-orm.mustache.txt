@@ -1,0 +1,13 @@
+{{#databases}}
+{{name}}
+{{#tables}}
+@Entity
+@Table({{#schema}}schema="{{schema}}", {{/schema}}name="{{name}}")
+public class {{name}}{
+    {{#columns}}
+    {{#isPrimary}}@Id{{/isPrimary}}{{#isAutoIncrement}}{{#isPrimary}}
+    {{/isisPrimary}}@GeneratedValue(strategy=GenerationType.IDENTITY){{/isAutoIncrement}}
+    private {{type}} {{name}};{{/columns}}
+}
+{{/tables}}
+{{/databases}}
