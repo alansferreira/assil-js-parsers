@@ -5,6 +5,7 @@
 /// <reference path="sql.ansi.parser.js" />
 /// <reference path="../lib/requirejs/require.min.js" />
 /// <reference path="../lib/mustache.js/mustache.min.js" />
+/// <reference path="../lib/assil-thesaurus-js/dist/thesaurus.min.js" />
 
 //////require(["jquery", "ace-editor", "angular", "angular-ui-ace", ]);
 
@@ -31,7 +32,12 @@ var ctrl = app.controller("ctrl", function ($scope) {
 
         $scope.databases[0].tables = sql.ansi.parser.tableScript(scriptCopy);
 
-        $scope.output = Mustache.render($scope.template, { databases: $scope.databases });
+        $scope.output = Mustache.render($scope.template, {
+            databases: $scope.databases,
+
+            camelName: function () { return this.name.toCamelCase(); },
+            CamelName: function () { return this.name.toCamelCase({ firstCharAsUpper : true}); }
+    });
     };
 
     $scope.aceOptionBase = {

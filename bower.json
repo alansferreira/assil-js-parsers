@@ -7,7 +7,8 @@
     "materialize": "0.97.6",
     "angular-ui-ace": "0.2.3",
     "jquery-nestable": "*",
-    "named-regexp": "*", 
-    "mustache.js": "*"
+    "named-regexp": "*",
+    "mustache.js": "*",
+    "assil-thesaurus-js": "*"
   }
 }
