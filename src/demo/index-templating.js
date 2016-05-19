@@ -19,8 +19,19 @@ var ctrl = app.controller("ctrl", function ($scope) {
                         "    {{~db.tables :tb:tbi}}{{='\\n    '}}\n" +
                         "    {{=tb.schema}}.{{=tb.name}}\n" +
                         "        {{~tb.columns :c:ci}}{{='\\n        '}}\n" +
-                        "        {{=c.name}} {{=c.type}} {{=c.precision}} {{=c.scale}} {{=c.isPrimary}}\n" +
-                        "        \n" +
+                        "            //{{=c.name}} {{=c.type}} {{=c.precision}} {{=c.scale}} {{=c.isPrimary}}{{='\\n       '}}\n" +
+                        "            \n" +
+                        "            {{? c.type.toCamelCase()==='int'}}Long\n" +
+                        "            {{??c.type.toCamelCase()==='decimal'}}Double\n" +
+                        "            {{??c.type.toCamelCase()==='numeric'}}Double\n" +
+                        "            {{??c.type.toCamelCase()==='char'}}String\n" +
+                        "            {{??c.type.toCamelCase()==='varchar'}}String\n" +
+                        "            {{??c.type.toCamelCase()==='date'}}Date\n" +
+                        "            {{??c.type.toCamelCase()==='datetime'}}Date\n" +
+                        "            {{??}}Object\n" +
+                        "            {{?}}\n" +
+                        "            {{=c.name.toCamelCase()}};\n" +
+                        "\n" +
                         "        {{~}}\n" +
                         "    \n" +
                         "    {{~}}\n" +

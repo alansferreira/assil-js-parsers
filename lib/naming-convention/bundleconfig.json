@@ -1,8 +1,8 @@
 [
   {
-    "outputFileName": "dist/thesaurus.js",
+    "outputFileName": "dist/naming-convention.js",
     "inputFiles": [
-      "js/thesaurus.js"
+      "js/naming-convention.js"
     ]
   }
 ]

@@ -8,7 +8,7 @@
     "tag": "v0.1.1",
     "commit": "446482d31128c844c8fbadbb5657b9c63eeb0532"
   },
-  "_source": "git://github.com/tkoomzaaskz/named-regexp.js.git",
+  "_source": "https://github.com/tkoomzaaskz/named-regexp.js.git",
   "_target": "*",
   "_originalSource": "named-regexp"
 }

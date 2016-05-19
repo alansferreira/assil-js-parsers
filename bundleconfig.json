@@ -1,15 +1,9 @@
 [
   {
-    "outputFileName": "js/sql.parsers.bundle.js",
+    "outputFileName": "dist/sql.ansi.parser.bundle.js",
     "inputFiles": [
-      "js/base.js",
-      "js/sql.ansi.parser.js"
-    ]
-  },
-  {
-    "outputFileName": "lib/requirejs/require.js",
-    "inputFiles": [
-      "lib/requirejs/require.js"
+      "src/base.js",
+      "src/sql.ansi.parser.js"
     ]
   }
 ]

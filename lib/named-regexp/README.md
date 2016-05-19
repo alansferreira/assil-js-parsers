@@ -1,8 +1,6 @@
 named-regexp.js
 =================
 
-https://github.com/cho45/named-regexp.js
-
 Append named-capture feature to JavaScript RegExp
 
 SYNOPSYS
@@ -53,9 +51,3 @@ Returns last matched string of the name.
 ### Method re.replace(string, replace)
 
 Same as `String.prototype.replace` but when `replace` is function, this method passes an Array object like value returning from `exec()`.
-
-
-LICENSE
-=======
-
-MIT: http://cho45.github.com/mit-license
