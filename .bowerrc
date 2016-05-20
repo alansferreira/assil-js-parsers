@@ -2,7 +2,5 @@
   "directory": "lib",
   "analytics": false,
   "timeout": 120000,
-  "strict-ssl": false,
-  "proxy": "http://proxy01.prodesp.sp.gov.br:80", 
-  "https-proxy":"http://proxy01.prodesp.sp.gov.br:80"
+  "strict-ssl": false
 }

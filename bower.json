@@ -9,6 +9,6 @@
     "jquery-nestable": "*",
     "named-regexp": "*",
     "doT": "*", 
-    "naming-convention": "1.0.1"
+    "naming-convention": "*" 
   }
 }
