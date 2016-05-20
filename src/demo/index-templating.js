@@ -21,16 +21,16 @@ var ctrl = app.controller("ctrl", function ($scope) {
                         "        {{~tb.columns :c:ci}}{{='\\n        '}}\n" +
                         "            //{{=c.name}} {{=c.type}} {{=c.precision}} {{=c.scale}} {{=c.isPrimary}}{{='\\n       '}}\n" +
                         "            \n" +
-                        "            {{? c.type.toCamelCase()==='int'}}Long\n" +
-                        "            {{??c.type.toCamelCase()==='decimal'}}Double\n" +
-                        "            {{??c.type.toCamelCase()==='numeric'}}Double\n" +
-                        "            {{??c.type.toCamelCase()==='char'}}String\n" +
-                        "            {{??c.type.toCamelCase()==='varchar'}}String\n" +
-                        "            {{??c.type.toCamelCase()==='date'}}Date\n" +
-                        "            {{??c.type.toCamelCase()==='datetime'}}Date\n" +
+                        "            {{? c.type.toLCamelCase()==='int'}}Long\n" +
+                        "            {{??c.type.toLCamelCase()==='decimal'}}Double\n" +
+                        "            {{??c.type.toLCamelCase()==='numeric'}}Double\n" +
+                        "            {{??c.type.toLCamelCase()==='char'}}String\n" +
+                        "            {{??c.type.toLCamelCase()==='varchar'}}String\n" +
+                        "            {{??c.type.toLCamelCase()==='date'}}Date\n" +
+                        "            {{??c.type.toLCamelCase()==='datetime'}}Date\n" +
                         "            {{??}}Object\n" +
                         "            {{?}}\n" +
-                        "            {{=c.name.toCamelCase()}};\n" +
+                        "            {{=c.name.toLCamelCase()}};\n" +
                         "\n" +
                         "        {{~}}\n" +
                         "    \n" +

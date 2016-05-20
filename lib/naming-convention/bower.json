@@ -26,6 +26,7 @@
   },
 
   "dependencies": {
-
+    "cs_console": "*", 
+    "materialize": "0.97.6"
   }
 }

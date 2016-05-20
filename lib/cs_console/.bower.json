@@ -1,0 +1,20 @@
+{
+  "name": "cs_console",
+  "main": "compiled/cs_console.js",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "homepage": "https://github.com/renz45/cs_console",
+  "_release": "f318453af0",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "f318453af064c75d394c04732c5f99fcbdbc4e49"
+  },
+  "_source": "https://github.com/renz45/cs_console.git",
+  "_target": "*",
+  "_originalSource": "cs_console"
+}
