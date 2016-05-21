@@ -2,8 +2,8 @@
   {
     "outputFileName": "dist/sql.ansi.parser.bundle.js",
     "inputFiles": [
-      "src/base.js",
+      "src/base.js", 
       "src/sql.ansi.parser.js"
-    ]
-  }
-]
+    ]  
+  }   
+]   

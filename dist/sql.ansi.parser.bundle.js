@@ -70,6 +70,30 @@ var sql = {
                     }
                 },
                 CONSTRAINT_INLINE: /CONSTRAINT[ ]{0,}(\[{0,}[^\[]+\]{0,})(.+(CLUSTERED)?)?[ ]{0,}\(([^\)]+)\)+/igm,
+                CONSTRAINT_PRIMARY_KEY_HEADER: {
+                    EXPRESSION: /CONSTRAINT +\[?([^\]]+)\]? {0,}(PRIMARY +KEY)[^\(]+(\([^\)]+\))/img,
+                    CAPTURES_INDEXES: {
+                        CONSTRANTI_NAME: 1,
+                        COLUMNS_SPEC: 3
+                    },
+                    FIELDS_DEF: {
+                        EXPRESSION: / {0,},? {0,}\[?([^\]]+)\]? +(ASC|DESC)/img,
+                        CAPTURES_INDEXES: {
+                            FIELD_NAME: 1,
+                            SORT_TYPE: 2
+                        }
+                    }
+                },
+
+                CONSTRAINT_FOREIGN_KEY_HEADER: {
+                    EXPRESSION: /CONSTRAINT +\[?([^\]]+)\]? {0,}(FOREIGN {0,}KEY)[^\(]+\(/img,
+                    CONSTRANTI_NAME: 1,
+                },
+                CONSTRAINT_FOREIGN_KEY_HEADER: {
+                    EXPRESSION: /CONSTRAINT +\[?([^\]]+)\]? {0,}(FOREIGN {0,}KEY)[^\(]+\(/img,
+                    CONSTRANTI_NAME: 1,
+                },
+
 
                 TABLE_COLUMN: {
                     EXPRESSION: /(\[[^\]]+\]|[a-zA-Z0-9_]+)[ ]+((\[[^\]]+\]|[a-zA-Z0-9_]+)([ ]{0,}\([ ]{0,}(([0-9]+)([ ]{0,},[ ]{0,}([0-9]))?)[ ]{0,}\))?)([ ]{1,}(PRIMARY[ ]{1,}KEY([ ]{1,}ASC|[ ]{1,}DESC)))?([ ]{1,}(IDENTITY([ ]{0,}\([ ]{0,}([0-9]+)[ ]{0,},[ ]{0,}([0-9]+)[ ]{0,}\))))?([ ]{1,}(NOT[ ]{1,})?NULL)?[ ]{0,}[,]{0,}[ ]{0,}/igm,
@@ -129,6 +153,18 @@ sql.ansi.models.table = function (initialData) {
 
     Object.deepExtend(this, initialData || {});
 };
+sql.ansi.models.primaryKey = function (initialData) {
+    this.name = "";
+    this.colunms = []; //[new sql.ansi.models.columnIndexSpec()]
+    Object.deepExtend(this, initialData || {});
+};
+sql.ansi.models.SORT = { ASC: "ASC", DESC: "DESC" };
+sql.ansi.models.columnIndexSpec = function (initialData) {
+    this.name = "";
+    this.sort = sql.ansi.models.SORT.ASC;
+
+    Object.deepExtend(this, initialData || {});
+};
 
 sql.ansi.parser.databaseScript = function (scriptData) {
 
@@ -177,35 +213,58 @@ sql.ansi.parser.tableScript = function (scriptData) {
     var tables = [];
     var script = scriptData.toString();
     var offset = 0;
+    var _this = this;
+    var _REGEXES = _this.REGEXES;
 
-    while (sql.ansi.parser.REGEXES.COMMENT.test(script)) {
-        script = script.replace(sql.ansi.parser.REGEXES.COMMENT, "");
+    while (_REGEXES.COMMENT.test(script)) {
+        script = script.replace(_REGEXES.COMMENT, "");
     }
 
     script = script.replaceAll("\t", " ").replaceAll("\r", " ").replaceAll("\n", " ");
 
-    iterateRegex(sql.ansi.parser.REGEXES.CREATE_TABLE_HEADER.EXPRESSION, script, function (regexp, inputText, match) {
+    iterateRegex(_REGEXES.CREATE_TABLE_HEADER.EXPRESSION, script, function (regexp, inputText, match) {
         var tableScript = script.substring(match.index, script.indexOfCloser(match.index + match[0].length, "(", ")") + 1);
         var tableConstraints = [];
 
         var table = new sql.ansi.models.table({
             src: tableScript,
-            schema: match[sql.ansi.parser.REGEXES.CREATE_TABLE_HEADER.CAPTURES_INDEXES.SCHEMA_NAME],
-            name: match[sql.ansi.parser.REGEXES.CREATE_TABLE_HEADER.CAPTURES_INDEXES.TABLE_NAME] || match[sql.ansi.parser.REGEXES.CREATE_TABLE_HEADER.CAPTURES_INDEXES.TABLE_NAME_ALTERNATIVE]
+            schema: match[_REGEXES.CREATE_TABLE_HEADER.CAPTURES_INDEXES.SCHEMA_NAME],
+            name: match[_REGEXES.CREATE_TABLE_HEADER.CAPTURES_INDEXES.TABLE_NAME] || match[_REGEXES.CREATE_TABLE_HEADER.CAPTURES_INDEXES.TABLE_NAME_ALTERNATIVE]
         });
 
         tableScript = tableScript.substring(match[0].length);
 
 
-        //TABLE CONSTRAINTS
-        iterateRegex(sql.ansi.parser.REGEXES.CONSTRAINT_INLINE, tableScript, function (regexp, inputText, match) {
-            tableConstraints.push(match);
+        ////TABLE CONSTRAINTS
+        //iterateRegex(_REGEXES.CONSTRAINT_INLINE, tableScript, function (regexp, inputText, match) {
+        //    tableConstraints.push(match);
 
-            tableScript = tableScript.substring(0, match.index) + tableScript.substring(match.index + match[0].length);
+        //    tableScript = tableScript.substring(0, match.index) + tableScript.substring(match.index + match[0].length);
+        //});
+        tableScript = tableScript.toString().replaceAll(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.EXPRESSION, function (m) {
+            table.primaryKey = new sql.ansi.models.primaryKey();
+            m.replaceAll(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.EXPRESSION, function (m1) {
+                
+            });
+            
         });
 
+        //iterateRegex(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.EXPRESSION, tableScript, function (regexp, inputText, match) {
+        //    tableConstraints.push(match);
+
+        //    table.primaryKey = new sql.ansi.models.primaryKey(); 
+        //    iterateRegex(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.EXPRESSION, match[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.CAPTURES_INDEXES.COLUMNS_SPEC], function (regexp1, inputText1, match1) {
+        //        table.primaryKey.colunms.push(new sql.ansi.models.columnIndexSpec({
+        //            name: match1[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.CAPTURES_INDEXES.FIELD_NAME],
+        //            sort: match1[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.CAPTURES_INDEXES.SORT_TYPE]
+        //        }));
+
+        //    });
+        //    tableScript = tableScript.substring(0, match.index) + tableScript.substring(match.index + match[0].length);
+        //});
+
         ////TABLE COLUMNS
-        //iterateRegex(sql.ansi.parser.REGEXES.COLUMN_SPECIFICATION, tableScript, function (regexp, inputText, match) {
+        //iterateRegex(_REGEXES.COLUMN_SPECIFICATION, tableScript, function (regexp, inputText, match) {
         //    table.columns.push(new sql.ansi.parser.columnScript(match[0]));
 
         //    tableScript = tableScript.substring(0, match.index) + tableScript.substring(match.index + match[0].length);
