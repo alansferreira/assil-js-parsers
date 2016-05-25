@@ -1,4 +1,7 @@
-﻿/**
+﻿/// <reference path="base.js" />
+/// <reference path="../lib/linqjs/linq.min.js" />
+
+/**
  * The MIT License (MIT) 
  * 
  * Copyright (c) 2016 Alan da Silva Ferreira 
@@ -22,8 +25,7 @@
  * SOFTWARE. 
  **/
 
-
-/// <reference path="base.js" />
+var from = Enumerable.from;
 var sql = {
     ansi: {
         parser: {
@@ -49,7 +51,7 @@ var sql = {
                         COLUMNS_SPEC: 3
                     },
                     FIELDS_DEF: {
-                        EXPRESSION: / {0,},? {0,}\[?([^\]]+)\]? +(ASC|DESC)/img,
+                        EXPRESSION: / {0,},? {0,}\[?([^\)\(\]]+)\]? +(ASC|DESC)/img,
                         CAPTURES_INDEXES: {
                             FIELD_NAME: 1,
                             SORT_TYPE: 2
@@ -214,19 +216,28 @@ sql.ansi.parser.tableScript = function (scriptData) {
         //    tableScript = tableScript.substring(0, match.index) + tableScript.substring(match.index + match[0].length);
         //});
         
-        iterateRegex(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.EXPRESSION, tableScript, function (regexp, inputText, match) {
-            //tableConstraints.push(match);
+        table.primaryKey = new sql.ansi.models.primaryKey();
+        tableScript.replaceAll(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.EXPRESSION, function (primaryExpr, constraintName, type, columnsSpec) {
+            columnsSpec.replaceAll(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.EXPRESSION, function (columnSpec, fieldName, sortType) {
 
-            table.primaryKey = new sql.ansi.models.primaryKey(); 
-            iterateRegex(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.EXPRESSION, match[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.CAPTURES_INDEXES.COLUMNS_SPEC], function (regexp1, inputText1, match1) {
-                table.primaryKey.colunms.push(new sql.ansi.models.columnIndexSpec({
-                    name: match1[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.CAPTURES_INDEXES.FIELD_NAME],
-                    sort: match1[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.CAPTURES_INDEXES.SORT_TYPE]
-                }));
+                table.primaryKey.colunms.push(new sql.ansi.models.columnIndexSpec({ name: fieldName, sort: sortType }));
 
             });
-            tableScript = tableScript.substring(0, match.index) + tableScript.substring(match.index + match[0].length);
         });
+
+        ////iterateRegex(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.EXPRESSION, tableScript, function (regexp, inputText, match) {
+        ////    //tableConstraints.push(match);
+
+        ////    table.primaryKey = new sql.ansi.models.primaryKey(); 
+        ////    iterateRegex(_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.EXPRESSION, match[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.CAPTURES_INDEXES.COLUMNS_SPEC], function (regexp1, inputText1, match1) {
+        ////        table.primaryKey.colunms.push(new sql.ansi.models.columnIndexSpec({
+        ////            name: match1[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.CAPTURES_INDEXES.FIELD_NAME],
+        ////            sort: match1[_REGEXES.CONSTRAINT_PRIMARY_KEY_HEADER.FIELDS_DEF.CAPTURES_INDEXES.SORT_TYPE]
+        ////        }));
+
+        ////    });
+        ////    tableScript = tableScript.substring(0, match.index) + tableScript.substring(match.index + match[0].length);
+        ////});
 
         ////TABLE COLUMNS
         //iterateRegex(_REGEXES.COLUMN_SPECIFICATION, tableScript, function (regexp, inputText, match) {
@@ -237,8 +248,19 @@ sql.ansi.parser.tableScript = function (scriptData) {
 
 
         table.columns = sql.ansi.parser.columnScript(tableScript);
-        for (var c in table.columns) c.table = table;
-        
+
+        from(table.primaryKey.colunms).forEach(function (pk) {
+
+            var column = from(table.columns).where(function (c) {
+                return (c.name == pk.name);
+            }).firstOrDefault();
+            if (!column) return true;
+
+            column.isPrimary = true;
+        });
+        for (var c in table.columns) {
+            c.table = table;
+        }
 
         tables.push(table);
 

@@ -8,7 +8,9 @@
     "angular-ui-ace": "0.2.3",
     "jquery-nestable": "*",
     "named-regexp": "*",
-    "doT": "*", 
-    "naming-convention": "1.0.5"
-  }
+    "doT": "*",
+    "naming-convention": "1.0.5", 
+    "linqjs ": "*"  
+  } 
 }
+    
